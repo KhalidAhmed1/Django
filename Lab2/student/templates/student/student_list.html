@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width:480px;margin:3rem auto">
+  <div class="danger-box card">
+    <div class="card-body" style="text-align:center">
+      <h2 style="color:#ef4444;margin-bottom:1rem">🗑️ Remove Student</h2>
+      <p style="margin-bottom:1.5rem">Are you sure you want to remove <strong>{{ student.get_full_name }}</strong>?<br>
+      <small style="color:#64748b">This will delete their account and unenroll them from all courses.</small></p>
+      <form method="post" style="display:inline-flex;gap:.75rem;justify-content:center">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, Remove</button>
+        <a href="{% url 'student_detail' student.pk %}" class="btn btn-outline">Cancel</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+  <a href="{% url 'student_list' %}" style="color:#64748b;text-decoration:none">← Students</a>
+  <h1>{{ student.get_full_name }}</h1>
+  <div class="actions">
+    <a href="{% url 'student_edit' student.pk %}" class="btn btn-primary">Edit</a>
+    <a href="{% url 'student_delete' student.pk %}" class="btn btn-danger">Delete</a>
+  </div>
+</div>
+
+<div class="detail-grid">
+  <!-- LEFT: info -->
+  <div>
+    <div class="card">
+      <div class="card-body">
+        <h2 style="margin-bottom:1rem;font-size:1.1rem">Student Info</h2>
+        <ul class="info-list">
+          <li><span class="label">Full Name</span> {{ student.get_full_name }}</li>
+          <li><span class="label">Username</span> {{ student.user.username }}</li>
+          <li><span class="label">Email</span> {{ student.user.email }}</li>
+          <li>
+            <span class="label">Level</span>
+            {% if student.level == 'beginner' %}<span class="badge badge-green">Beginner</span>
+            {% elif student.level == 'intermediate' %}<span class="badge badge-orange">Intermediate</span>
+            {% else %}<span class="badge badge-purple">Advanced</span>{% endif %}
+          </li>
+          {% if student.phone %}<li><span class="label">Phone</span> {{ student.phone }}</li>{% endif %}
+          {% if student.date_of_birth %}<li><span class="label">Date of Birth</span> {{ student.date_of_birth }}</li>{% endif %}
+          <li><span class="label">Enrolled Since</span> {{ student.enrollment_date }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: enrolled courses -->
+  <div>
+    <div class="card">
+      <div class="card-body">
+        <h2 style="margin-bottom:1rem;font-size:1.1rem">Enrolled Courses ({{ enrolled_courses.count }})</h2>
+        {% if enrolled_courses %}
+          {% for course in enrolled_courses %}
+          <div style="padding:.6rem 0;border-bottom:1px solid #e2e8f0">
+            <a href="{% url 'course_detail' course.pk %}" style="font-weight:600;color:#4f46e5;text-decoration:none">{{ course.title }}</a>
+            <div style="font-size:.8rem;color:#64748b;margin-top:.2rem">
+              {% if course.instructor %}by {{ course.instructor.get_full_name }}{% endif %}
+              · {{ course.get_category_display }}
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <p style="color:#64748b;font-size:.9rem">Not enrolled in any courses yet.</p>
+        {% endif %}
+        <div style="margin-top:1rem">
+          <a href="{% url 'course_list' %}" class="btn btn-outline btn-sm">Browse Courses</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

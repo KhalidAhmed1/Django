@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+  <a href="{% url 'instructor_list' %}" style="color:#64748b;text-decoration:none">← Instructors</a>
+  <h1>{{ page_title }}</h1>
+</div>
+
+<div class="form-card card">
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name *</label>
+          <input type="text" name="first_name" value="{{ instructor.user.first_name|default:form_data.first_name }}" required>
+        </div>
+        <div class="form-group">
+          <label>Last Name *</label>
+          <input type="text" name="last_name" value="{{ instructor.user.last_name|default:form_data.last_name }}" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Email *</label>
+        <input type="email" name="email" value="{{ instructor.user.email|default:form_data.email }}" required>
+      </div>
+
+      <div class="form-group">
+        <label>Expertise *</label>
+        <input type="text" name="expertise" value="{{ instructor.expertise|default:form_data.expertise }}" placeholder="e.g. Python, Machine Learning" required>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" name="phone" value="{{ instructor.phone|default:form_data.phone }}">
+        </div>
+        <div class="form-group">
+          <label>Website</label>
+          <input type="url" name="website" value="{{ instructor.website|default:form_data.website }}" placeholder="https://...">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Bio</label>
+        <textarea name="bio">{{ instructor.bio|default:form_data.bio }}</textarea>
+      </div>
+
+      {% if not instructor %}
+      <p class="form-hint" style="margin-bottom:1rem">⚠️ Default password will be <strong>changeme123</strong>. Change it in admin.</p>
+      {% endif %}
+
+      <div style="display:flex;gap:.75rem">
+        <button type="submit" class="btn btn-primary">
+          {% if instructor %}Save Changes{% else %}Create Instructor{% endif %}
+        </button>
+        <a href="{% url 'instructor_list' %}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

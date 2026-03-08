@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+  <a href="{% url 'instructor_list' %}" style="color:#64748b;text-decoration:none">← Instructors</a>
+  <h1>{{ instructor.get_full_name }}</h1>
+  <div class="actions">
+    <a href="{% url 'instructor_edit' instructor.pk %}" class="btn btn-primary">Edit</a>
+    <a href="{% url 'instructor_delete' instructor.pk %}" class="btn btn-danger">Delete</a>
+  </div>
+</div>
+
+<div class="detail-grid">
+  <!-- LEFT: info -->
+  <div>
+    <div class="card" style="margin-bottom:1.5rem">
+      <div class="card-body">
+        <h2 style="margin-bottom:1rem;font-size:1.1rem">Profile</h2>
+        <ul class="info-list">
+          <li><span class="label">Full Name</span> {{ instructor.get_full_name }}</li>
+          <li><span class="label">Username</span> {{ instructor.user.username }}</li>
+          <li><span class="label">Email</span> {{ instructor.user.email }}</li>
+          <li><span class="label">Expertise</span> {{ instructor.expertise }}</li>
+          {% if instructor.phone %}<li><span class="label">Phone</span> {{ instructor.phone }}</li>{% endif %}
+          {% if instructor.website %}<li><span class="label">Website</span> <a href="{{ instructor.website }}">{{ instructor.website }}</a></li>{% endif %}
+          <li><span class="label">Hired</span> {{ instructor.hire_date }}</li>
+        </ul>
+      </div>
+    </div>
+
+    {% if instructor.bio %}
+    <div class="card">
+      <div class="card-body">
+        <h2 style="margin-bottom:.75rem;font-size:1.1rem">Bio</h2>
+        <p style="line-height:1.7;color:#475569">{{ instructor.bio }}</p>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- RIGHT: courses -->
+  <div>
+    <div class="card">
+      <div class="card-body">
+        <h2 style="margin-bottom:1rem;font-size:1.1rem">Courses ({{ courses.count }})</h2>
+        {% if courses %}
+          {% for course in courses %}
+          <div style="padding:.6rem 0;border-bottom:1px solid #e2e8f0">
+            <a href="{% url 'course_detail' course.pk %}" style="font-weight:600;color:#4f46e5;text-decoration:none">{{ course.title }}</a>
+            <div style="font-size:.8rem;color:#64748b;margin-top:.2rem">
+              {{ course.get_level_display }} · {{ course.total_students }} student{{ course.total_students|pluralize }}
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <p style="color:#64748b;font-size:.9rem">No courses assigned yet.</p>
+        {% endif %}
+        <div style="margin-top:1rem">
+          <a href="{% url 'course_create' %}" class="btn btn-outline btn-sm">+ New Course</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

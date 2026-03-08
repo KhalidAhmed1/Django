@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+  <h1>📚 Courses</h1>
+  <div class="actions">
+    <a href="{% url 'course_create' %}" class="btn btn-primary">+ New Course</a>
+  </div>
+</div>
+
+<!-- Category Filter -->
+<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem">
+  <a href="{% url 'course_list' %}" class="btn btn-sm {% if not selected_category %}btn-primary{% else %}btn-outline{% endif %}">All</a>
+  {% for val, label in categories %}
+  <a href="?category={{ val }}" class="btn btn-sm {% if selected_category == val %}btn-primary{% else %}btn-outline{% endif %}">{{ label }}</a>
+  {% endfor %}
+</div>
+
+{% if courses %}
+<div class="grid-3">
+  {% for course in courses %}
+  <div class="card">
+    <!-- Course Image -->
+    <div class="card-img">
+      {% if course.image %}
+        <img src="{{ course.image.url }}" alt="{{ course.title }}">
+      {% else %}
+        📚
+      {% endif %}
+    </div>
+
+    <div class="card-body">
+      <div style="display:flex;gap:.4rem;margin-bottom:.5rem;flex-wrap:wrap">
+        <span class="badge badge-blue">{{ course.get_category_display }}</span>
+        <span class="badge badge-purple">{{ course.get_level_display }}</span>
+      </div>
+      <div class="card-title">{{ course.title }}</div>
+      <div class="card-meta">
+        {% if course.instructor %}by {{ course.instructor.get_full_name }}{% endif %}
+      </div>
+      <p style="font-size:.85rem;color:#475569;margin-bottom:.75rem">{{ course.description|truncatechars:90 }}</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+        <span style="font-weight:700;color:#4f46e5">${{ course.price }}</span>
+        <span style="font-size:.8rem;color:#64748b">{{ course.total_students }} student{{ course.total_students|pluralize }} · {{ course.duration_hours }}h</span>
+      </div>
+      <div style="display:flex;gap:.5rem">
+        <a href="{% url 'course_detail' course.pk %}" class="btn btn-outline btn-sm">View</a>
+        <a href="{% url 'course_edit' course.pk %}" class="btn btn-primary btn-sm">Edit</a>
+        <a href="{% url 'course_delete' course.pk %}" class="btn btn-danger btn-sm">Delete</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty">
+  <p>No courses found{% if selected_category %} in this category{% endif %}.</p>
+  <a href="{% url 'course_create' %}" class="btn btn-primary">Create First Course</a>
+</div>
+{% endif %}
+
+{% endblock %}

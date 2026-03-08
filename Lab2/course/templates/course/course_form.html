@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+  <a href="{% url 'course_list' %}" style="color:#64748b;text-decoration:none">← Courses</a>
+  <h1>{{ page_title }}</h1>
+</div>
+
+<div class="form-card card">
+  <div class="card-body">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label>Course Title *</label>
+        <input type="text" name="title" value="{{ course.title|default:'' }}" required>
+      </div>
+
+      <div class="form-group">
+        <label>Description *</label>
+        <textarea name="description">{{ course.description|default:'' }}</textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category</label>
+          <select name="category">
+            {% for val, label in categories %}
+            <option value="{{ val }}" {% if course.category == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Level</label>
+          <select name="level">
+            {% for val, label in levels %}
+            <option value="{{ val }}" {% if course.level == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Duration (hours)</label>
+          <input type="number" name="duration_hours" min="0" value="{{ course.duration_hours|default:0 }}">
+        </div>
+        <div class="form-group">
+          <label>Price ($)</label>
+          <input type="number" name="price" min="0" step="0.01" value="{{ course.price|default:0 }}">
+        </div>
+      </div>
+
+      <!-- ManyToOne: Instructor -->
+      <div class="form-group">
+        <label>Instructor <span style="font-size:.75rem;color:#64748b">(ManyToOne)</span></label>
+        <select name="instructor">
+          <option value="">— No instructor —</option>
+          {% for instructor in instructors %}
+          <option value="{{ instructor.pk }}" {% if course.instructor_id == instructor.pk %}selected{% endif %}>
+            {{ instructor.get_full_name }} · {{ instructor.expertise }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- ManyToMany: Students -->
+      <div class="form-group">
+        <label>Students <span style="font-size:.75rem;color:#64748b">(ManyToMany — hold Ctrl/Cmd to select multiple)</span></label>
+        <select name="students" multiple>
+          {% for student in students %}
+          <option value="{{ student.pk }}" {% if student.pk in selected_students %}selected{% endif %}>
+            {{ student.get_full_name }} ({{ student.get_level_display }})
+          </option>
+          {% endfor %}
+        </select>
+        <p class="form-hint">You can also enroll/unenroll students from the course detail page.</p>
+      </div>
+
+      <!-- Image Upload -->
+      <div class="form-group">
+        <label>Course Image</label>
+        {% if course.image %}
+          <div style="margin-bottom:.75rem">
+            <img src="{{ course.image.url }}" alt="current image" style="height:120px;object-fit:cover;border-radius:8px;border:1px solid #e2e8f0">
+            <p class="form-hint">Current image. Upload a new one to replace it.</p>
+          </div>
+        {% endif %}
+        <input type="file" name="image" accept="image/*">
+        <p class="form-hint">Accepted: JPG, PNG, GIF, WebP. Recommended: 800×450px.</p>
+      </div>
+
+      <div style="display:flex;gap:.75rem">
+        <button type="submit" class="btn btn-primary">
+          {% if course %}Save Changes{% else %}Create Course{% endif %}
+        </button>
+        <a href="{% url 'course_list' %}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+  <a href="{% url 'course_list' %}" style="color:#64748b;text-decoration:none">← Courses</a>
+  <h1>{{ course.title }}</h1>
+  <div class="actions">
+    <a href="{% url 'course_edit' course.pk %}" class="btn btn-primary">Edit</a>
+    <a href="{% url 'course_delete' course.pk %}" class="btn btn-danger">Delete</a>
+  </div>
+</div>
+
+<div class="detail-grid">
+  <!-- LEFT: course info -->
+  <div>
+    <!-- Image -->
+    {% if course.image %}
+    <div class="card" style="margin-bottom:1.5rem;overflow:hidden">
+      <img src="{{ course.image.url }}" alt="{{ course.title }}" style="width:100%;max-height:280px;object-fit:cover">
+    </div>
+    {% endif %}
+
+    <div class="card" style="margin-bottom:1.5rem">
+      <div class="card-body">
+        <h2 style="margin-bottom:1rem;font-size:1.1rem">Course Details</h2>
+        <ul class="info-list">
+          <li>
+            <span class="label">Category</span>
+            <span class="badge badge-blue">{{ course.get_category_display }}</span>
+          </li>
+          <li>
+            <span class="label">Level</span>
+            <span class="badge badge-purple">{{ course.get_level_display }}</span>
+          </li>
+          <li><span class="label">Duration</span> {{ course.duration_hours }} hours</li>
+          <li><span class="label">Price</span> ${{ course.price }}</li>
+          <li><span class="label">Created</span> {{ course.created_at|date:"M d, Y" }}</li>
+          <li>
+            <span class="label">Status</span>
+            {% if course.is_active %}<span class="badge badge-green">Active</span>
+            {% else %}<span class="badge" style="background:#fee2e2;color:#991b1b">Inactive</span>{% endif %}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h2 style="margin-bottom:.75rem;font-size:1.1rem">Description</h2>
+        <p style="line-height:1.7;color:#475569">{{ course.description }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: instructor + students -->
+  <div>
+    <!-- Instructor (Many-to-One) -->
+    <div class="card" style="margin-bottom:1.5rem">
+      <div class="card-body">
+        <h2 style="margin-bottom:1rem;font-size:1.1rem">👨‍🏫 Instructor <span style="font-size:.75rem;color:#64748b">(ManyToOne)</span></h2>
+        {% if course.instructor %}
+          <div style="font-weight:600">{{ course.instructor.get_full_name }}</div>
+          <div style="color:#64748b;font-size:.85rem;margin:.25rem 0">{{ course.instructor.expertise }}</div>
+          <a href="{% url 'instructor_detail' course.instructor.pk %}" class="btn btn-outline btn-sm" style="margin-top:.5rem">View Profile</a>
+        {% else %}
+          <p style="color:#64748b;font-size:.9rem">No instructor assigned.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Students (ManyToMany) -->
+    <div class="card">
+      <div class="card-body">
+        <h2 style="margin-bottom:1rem;font-size:1.1rem">
+          🎓 Students ({{ course.students.count }})
+          <span style="font-size:.75rem;color:#64748b">(ManyToMany)</span>
+        </h2>
+
+        {% if course.students.all %}
+          {% for student in course.students.all %}
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid #e2e8f0">
+            <div>
+              <a href="{% url 'student_detail' student.pk %}" style="color:#4f46e5;font-weight:600;text-decoration:none">{{ student.get_full_name }}</a>
+              <div style="font-size:.78rem;color:#64748b">{{ student.get_level_display }}</div>
+            </div>
+            <form method="post" action="{% url 'enroll_student' course.pk %}">
+              {% csrf_token %}
+              <input type="hidden" name="student_id" value="{{ student.pk }}">
+              <input type="hidden" name="action" value="unenroll">
+              <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+            </form>
+          </div>
+          {% endfor %}
+        {% else %}
+          <p style="color:#64748b;font-size:.9rem;margin-bottom:1rem">No students enrolled yet.</p>
+        {% endif %}
+
+        <!-- Enroll a student -->
+        {% if all_students %}
+        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid #e2e8f0">
+          <p style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">Enroll a student:</p>
+          <form method="post" action="{% url 'enroll_student' course.pk %}" style="display:flex;gap:.5rem">
+            {% csrf_token %}
+            <select name="student_id" style="flex:1;padding:.4rem .6rem;border:1px solid #e2e8f0;border-radius:6px;font-size:.85rem">
+              {% for student in all_students %}
+                {% if student.pk not in enrolled_ids %}
+                <option value="{{ student.pk }}">{{ student.get_full_name }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+            <input type="hidden" name="action" value="enroll">
+            <button type="submit" class="btn btn-success btn-sm">Enroll</button>
+          </form>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

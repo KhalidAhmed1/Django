@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}{{ page_title }}{% endblock %} | EduPlatform</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:   #4f46e5;
+      --primary-d: #3730a3;
+      --success:   #10b981;
+      --danger:    #ef4444;
+      --warn:      #f59e0b;
+      --bg:        #f8fafc;
+      --card:      #ffffff;
+      --text:      #1e293b;
+      --muted:     #64748b;
+      --border:    #e2e8f0;
+      --radius:    10px;
+    }
+
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* NAV */
+    nav {
+      background: var(--primary);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      height: 60px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.2);
+    }
+    nav .brand { color: #fff; font-weight: 700; font-size: 1.25rem; text-decoration: none; }
+    nav a { color: rgba(255,255,255,.85); text-decoration: none; font-size: .9rem; padding: .25rem .6rem; border-radius: 6px; transition: background .2s; }
+    nav a:hover { background: rgba(255,255,255,.15); color: #fff; }
+    nav .spacer { flex: 1; }
+
+    /* LAYOUT */
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+    /* MESSAGES */
+    .messages { list-style: none; margin-bottom: 1.5rem; }
+    .messages li { padding: .75rem 1rem; border-radius: var(--radius); margin-bottom: .5rem; font-size: .9rem; }
+    .messages .success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .messages .error   { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .messages .info    { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+
+    /* PAGE HEADER */
+    .page-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .page-header h1 { font-size: 1.75rem; font-weight: 700; }
+    .page-header .actions { margin-left: auto; display: flex; gap: .75rem; }
+
+    /* CARDS */
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+    .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.1); }
+    .card-body { padding: 1.25rem; }
+    .card-img { width: 100%; height: 180px; object-fit: cover; background: linear-gradient(135deg,#e0e7ff,#c7d2fe); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 3rem; }
+    .card-img img { width: 100%; height: 180px; object-fit: cover; }
+    .card-title { font-weight: 700; font-size: 1.05rem; margin-bottom: .35rem; }
+    .card-meta  { color: var(--muted); font-size: .82rem; margin-bottom: .5rem; }
+
+    /* GRID */
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+
+    /* TABLE */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    th, td { text-align: left; padding: .75rem 1rem; border-bottom: 1px solid var(--border); }
+    th { background: var(--bg); font-weight: 600; color: var(--muted); text-transform: uppercase; font-size: .75rem; letter-spacing: .05em; }
+    tr:hover td { background: #f1f5f9; }
+
+    /* BUTTONS */
+    .btn { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem 1.1rem; border-radius: 8px; font-size: .875rem; font-weight: 600; text-decoration: none; cursor: pointer; border: none; transition: all .2s; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-d); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover { background: #059669; }
+    .btn-danger  { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #dc2626; }
+    .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+    .btn-outline:hover { background: var(--primary); color: #fff; }
+    .btn-sm { padding: .3rem .7rem; font-size: .8rem; }
+
+    /* BADGE */
+    .badge { display: inline-block; padding: .2rem .6rem; border-radius: 99px; font-size: .75rem; font-weight: 600; }
+    .badge-blue   { background: #dbeafe; color: #1e40af; }
+    .badge-green  { background: #d1fae5; color: #065f46; }
+    .badge-orange { background: #fef3c7; color: #92400e; }
+    .badge-purple { background: #ede9fe; color: #5b21b6; }
+
+    /* FORM */
+    .form-card { max-width: 680px; margin: 0 auto; }
+    .form-group { margin-bottom: 1.25rem; }
+    label { display: block; font-weight: 600; font-size: .875rem; margin-bottom: .4rem; color: var(--text); }
+    input[type=text], input[type=email], input[type=url], input[type=number],
+    input[type=date], input[type=file], textarea, select {
+      width: 100%; padding: .6rem .85rem; border: 1px solid var(--border);
+      border-radius: 8px; font-size: .9rem; transition: border-color .2s;
+      background: #fff;
+    }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,.15); }
+    textarea { min-height: 100px; resize: vertical; }
+    select[multiple] { height: 140px; }
+    .form-hint { font-size: .78rem; color: var(--muted); margin-top: .3rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media(max-width:600px) { .form-row { grid-template-columns: 1fr; } }
+
+    /* DETAIL PAGE */
+    .detail-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
+    @media(max-width:768px) { .detail-grid { grid-template-columns: 1fr; } }
+    .info-list { list-style: none; }
+    .info-list li { display: flex; gap: .75rem; padding: .6rem 0; border-bottom: 1px solid var(--border); font-size: .9rem; }
+    .info-list li:last-child { border-bottom: none; }
+    .info-list .label { font-weight: 600; color: var(--muted); min-width: 130px; }
+
+    /* CONFIRM DELETE */
+    .danger-box { border: 2px solid var(--danger); border-radius: var(--radius); padding: 2rem; text-align: center; }
+    .danger-box h2 { color: var(--danger); margin-bottom: 1rem; }
+
+    /* EMPTY STATE */
+    .empty { text-align: center; padding: 4rem 1rem; color: var(--muted); }
+    .empty p { margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="{% url 'course_list' %}" class="brand">🎓 EduPlatform</a>
+  <a href="{% url 'course_list' %}">Courses</a>
+  <a href="{% url 'instructor_list' %}">Instructors</a>
+  <a href="{% url 'student_list' %}">Students</a>
+  <div class="spacer"></div>
+  <a href="/admin/">Admin</a>
+</nav>
+
+<div class="container">
+
+  {% if messages %}
+  <ul class="messages">
+    {% for m in messages %}
+    <li class="{{ m.tags }}">{{ m }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% block content %}{% endblock %}
+
+</div>
+</body>
+</html>

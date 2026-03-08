@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+  <h1>👨‍🏫 Instructors</h1>
+  <div class="actions">
+    <a href="{% url 'instructor_create' %}" class="btn btn-primary">+ Add Instructor</a>
+  </div>
+</div>
+
+{% if instructors %}
+<div class="grid-3">
+  {% for instructor in instructors %}
+  <div class="card">
+    <div class="card-img">👨‍🏫</div>
+    <div class="card-body">
+      <div class="card-title">{{ instructor.get_full_name }}</div>
+      <div class="card-meta">{{ instructor.expertise }}</div>
+      <div style="margin-bottom:.75rem">
+        <span class="badge badge-blue">{{ instructor.total_courses }} course{{ instructor.total_courses|pluralize }}</span>
+      </div>
+      {% if instructor.bio %}
+        <p style="font-size:.85rem;color:#475569;margin-bottom:.75rem">{{ instructor.bio|truncatechars:80 }}</p>
+      {% endif %}
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <a href="{% url 'instructor_detail' instructor.pk %}" class="btn btn-outline btn-sm">View</a>
+        <a href="{% url 'instructor_edit' instructor.pk %}" class="btn btn-primary btn-sm">Edit</a>
+        <a href="{% url 'instructor_delete' instructor.pk %}" class="btn btn-danger btn-sm">Delete</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty">
+  <p>No instructors yet.</p>
+  <a href="{% url 'instructor_create' %}" class="btn btn-primary">Add First Instructor</a>
+</div>
+{% endif %}
+
+{% endblock %}
