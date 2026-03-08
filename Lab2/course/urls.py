@@ -9,3 +9,6 @@ urlpatterns = [
     path('<int:pk>/delete/', views.course_delete, name='course_delete'),
     path('<int:course_pk>/enroll/', views.enroll_student, name='enroll_student'),
 ]
+
+
+

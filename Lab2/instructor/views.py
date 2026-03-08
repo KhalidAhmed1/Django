@@ -43,7 +43,6 @@ def instructor_create(request):
             })
 
         username = f"{first_name.lower()}.{last_name.lower()}"
-        # make username unique
         base, counter = username, 1
         while User.objects.filter(username=username).exists():
             username = f"{base}{counter}"
@@ -66,8 +65,10 @@ def instructor_create(request):
         messages.success(request, f'Instructor {user.get_full_name()} created!')
         return redirect('instructor_list')
 
+    # GET request
     return render(request, 'instructor/instructor_form.html', {
         'page_title': 'Add Instructor',
+        'form_data': {},  
     })
 
 
@@ -91,6 +92,7 @@ def instructor_edit(request, pk):
     return render(request, 'instructor/instructor_form.html', {
         'instructor': instructor,
         'page_title': f'Edit {instructor.get_full_name()}',
+        'form_data': {},  
     })
 
 
@@ -99,7 +101,7 @@ def instructor_delete(request, pk):
     instructor = get_object_or_404(Instructor, pk=pk)
     if request.method == 'POST':
         name = instructor.get_full_name()
-        instructor.user.delete()   # cascades to instructor
+        instructor.user.delete()
         messages.success(request, f'Instructor {name} deleted.')
         return redirect('instructor_list')
     return render(request, 'instructor/instructor_confirm_delete.html', {

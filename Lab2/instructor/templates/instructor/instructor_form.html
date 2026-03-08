@@ -14,38 +14,38 @@
       <div class="form-row">
         <div class="form-group">
           <label>First Name *</label>
-          <input type="text" name="first_name" value="{{ instructor.user.first_name|default:form_data.first_name }}" required>
+          <input type="text" name="first_name" value="{{ instructor.user.first_name|default:'' }}" required>
         </div>
         <div class="form-group">
           <label>Last Name *</label>
-          <input type="text" name="last_name" value="{{ instructor.user.last_name|default:form_data.last_name }}" required>
+          <input type="text" name="last_name" value="{{ instructor.user.last_name|default:'' }}" required>
         </div>
       </div>
 
       <div class="form-group">
         <label>Email *</label>
-        <input type="email" name="email" value="{{ instructor.user.email|default:form_data.email }}" required>
+        <input type="email" name="email" value="{{ instructor.user.email|default:'' }}" required>
       </div>
 
       <div class="form-group">
         <label>Expertise *</label>
-        <input type="text" name="expertise" value="{{ instructor.expertise|default:form_data.expertise }}" placeholder="e.g. Python, Machine Learning" required>
+        <input type="text" name="expertise" value="{{ instructor.expertise|default:'' }}" placeholder="e.g. Python, Machine Learning" required>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label>Phone</label>
-          <input type="text" name="phone" value="{{ instructor.phone|default:form_data.phone }}">
+          <input type="text" name="phone" value="{{ instructor.phone|default:'' }}">
         </div>
         <div class="form-group">
           <label>Website</label>
-          <input type="url" name="website" value="{{ instructor.website|default:form_data.website }}" placeholder="https://...">
+          <input type="url" name="website" value="{{ instructor.website|default:'' }}" placeholder="https://...">
         </div>
       </div>
 
       <div class="form-group">
         <label>Bio</label>
-        <textarea name="bio">{{ instructor.bio|default:form_data.bio }}</textarea>
+        <textarea name="bio">{{ instructor.bio|default:'' }}</textarea>
       </div>
 
       {% if not instructor %}

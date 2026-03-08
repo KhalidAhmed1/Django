@@ -64,9 +64,11 @@ def student_create(request):
         messages.success(request, f'Student {user.get_full_name()} enrolled!')
         return redirect('student_list')
 
+    # GET request
     return render(request, 'student/student_form.html', {
         'page_title': 'Add Student',
         'level_choices': Student.LEVEL_CHOICES,
+        'form_data': {},
     })
 
 
@@ -90,6 +92,7 @@ def student_edit(request, pk):
         'student': student,
         'page_title': f'Edit {student.get_full_name()}',
         'level_choices': Student.LEVEL_CHOICES,
+        'form_data': {}, 
     })
 
 

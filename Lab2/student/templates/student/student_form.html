@@ -14,17 +14,17 @@
       <div class="form-row">
         <div class="form-group">
           <label>First Name *</label>
-          <input type="text" name="first_name" value="{{ student.user.first_name|default:form_data.first_name }}" required>
+          <input type="text" name="first_name" value="{{ student.user.first_name|default:'' }}" required>
         </div>
         <div class="form-group">
           <label>Last Name *</label>
-          <input type="text" name="last_name" value="{{ student.user.last_name|default:form_data.last_name }}" required>
+          <input type="text" name="last_name" value="{{ student.user.last_name|default:'' }}" required>
         </div>
       </div>
 
       <div class="form-group">
         <label>Email *</label>
-        <input type="email" name="email" value="{{ student.user.email|default:form_data.email }}" required>
+        <input type="email" name="email" value="{{ student.user.email|default:'' }}" required>
       </div>
 
       <div class="form-row">
@@ -32,19 +32,19 @@
           <label>Level</label>
           <select name="level">
             {% for val, label in level_choices %}
-            <option value="{{ val }}" {% if student.level == val or form_data.level == val %}selected{% endif %}>{{ label }}</option>
+            <option value="{{ val }}" {% if student.level == val %}selected{% endif %}>{{ label }}</option>
             {% endfor %}
           </select>
         </div>
         <div class="form-group">
           <label>Phone</label>
-          <input type="text" name="phone" value="{{ student.phone|default:form_data.phone }}">
+          <input type="text" name="phone" value="{{ student.phone|default:'' }}">
         </div>
       </div>
 
       <div class="form-group">
         <label>Date of Birth</label>
-        <input type="date" name="date_of_birth" value="{{ student.date_of_birth|default:form_data.date_of_birth }}">
+        <input type="date" name="date_of_birth" value="{{ student.date_of_birth|default:'' }}">
       </div>
 
       {% if not student %}
